@@ -11,11 +11,11 @@
                     "description": "The web server's http port."
                 },
                 "labels": {
-                    "application": "mlbparks",
+                    "application": "parks-web",
                     "template": "eap70-mongodb-persistent-s2i",
                     "xpaas": "1.3.2"
                 },
-                "name": "mlbparks"
+                "name": "parks-web"
             },
             "spec": {
                 "ports": [
@@ -25,7 +25,7 @@
                     }
                 ],
                 "selector": {
-                    "deploymentConfig": "mlbparks"
+                    "deploymentConfig": "parks-web"
                 }
             }
         },
@@ -37,11 +37,11 @@
                     "description": "The web server's https port."
                 },
                 "labels": {
-                    "application": "mlbparks",
+                    "application": "parks-web",
                     "template": "eap70-mongodb-persistent-s2i",
                     "xpaas": "1.3.2"
                 },
-                "name": "secure-mlbparks"
+                "name": "secure-parks-web"
             },
             "spec": {
                 "ports": [
@@ -51,7 +51,7 @@
                     }
                 ],
                 "selector": {
-                    "deploymentConfig": "mlbparks"
+                    "deploymentConfig": "parks-web"
                 }
             }
         },
@@ -63,11 +63,11 @@
                     "description": "The database server's port."
                 },
                 "labels": {
-                    "application": "mlbparks",
+                    "application": "parks-web",
                     "template": "eap70-mongodb-persistent-s2i",
                     "xpaas": "1.3.2"
                 },
-                "name": "mlbparks-mongodb"
+                "name": "parks-web-mongodb"
             },
             "spec": {
                 "ports": [
@@ -77,46 +77,46 @@
                     }
                 ],
                 "selector": {
-                    "deploymentConfig": "mlbparks-mongodb"
+                    "deploymentConfig": "parks-web-mongodb"
                 }
             }
         },
         {
             "apiVersion": "v1",
-            "id": "mlbparks-http",
+            "id": "parks-web-http",
             "kind": "Route",
             "metadata": {
                 "annotations": {
                     "description": "Route for application's http service."
                 },
                 "labels": {
-                    "application": "mlbparks",
+                    "application": "parks-web",
                     "template": "eap70-mongodb-persistent-s2i",
                     "xpaas": "1.3.2"
                 },
-                "name": "mlbparks"
+                "name": "parks-web"
             },
             "spec": {
                 "host": "",
                 "to": {
-                    "name": "mlbparks"
+                    "name": "parks-web"
                 }
             }
         },
         {
             "apiVersion": "v1",
-            "id": "mlbparks-https",
+            "id": "parks-web-https",
             "kind": "Route",
             "metadata": {
                 "annotations": {
                     "description": "Route for application's https service."
                 },
                 "labels": {
-                    "application": "mlbparks",
+                    "application": "parks-web",
                     "template": "eap70-mongodb-persistent-s2i",
                     "xpaas": "1.3.2"
                 },
-                "name": "secure-mlbparks"
+                "name": "secure-parks-web"
             },
             "spec": {
                 "host": "",
@@ -124,7 +124,7 @@
                     "termination": "passthrough"
                 },
                 "to": {
-                    "name": "secure-mlbparks"
+                    "name": "secure-parks-web"
                 }
             }
         },
@@ -133,11 +133,11 @@
             "kind": "ImageStream",
             "metadata": {
                 "labels": {
-                    "application": "mlbparks",
+                    "application": "parks-web",
                     "template": "eap70-mongodb-persistent-s2i",
                     "xpaas": "1.3.2"
                 },
-                "name": "mlbparks"
+                "name": "parks-web"
             }
         },
         {
@@ -145,21 +145,21 @@
             "kind": "BuildConfig",
             "metadata": {
                 "labels": {
-                    "application": "mlbparks",
-                    "template": "eap70-mongodb-persistent-s2i",
+                    "application": "parks-web",
+                    "template": "national-parks",
                     "xpaas": "1.3.2"
                 },
-                "name": "mlbparks"
+                "name": "parks-web"
             },
             "spec": {
                 "output": {
                     "to": {
                         "kind": "ImageStreamTag",
-                        "name": "mlbparks:latest"
+                        "name": "parks-web:latest"
                     }
                 },
                 "source": {
-                    "contextDir": "/mlbparks",
+                    "contextDir": "/parksmap-web",
                     "git": {
                         "ref": "master",
                         "uri": "https://github.com/malacourse/ParksMap.git"
@@ -171,7 +171,7 @@
                         "forcePull": true,
                         "from": {
                             "kind": "ImageStreamTag",
-                            "name": "jboss-eap70-openshift:1.4",
+                            "name": "redhat-openjdk18-openshift:1.0",
                             "namespace": "openshift"
                         }
                     },
@@ -205,16 +205,16 @@
             "kind": "DeploymentConfig",
             "metadata": {
                 "labels": {
-                    "application": "mlbparks",
-                    "template": "eap70-mongodb-persistent-s2i",
+                    "application": "parks-web",
+                    "template": "national-parks",
                     "xpaas": "1.3.2"
                 },
-                "name": "mlbparks"
+                "name": "parks-web"
             },
             "spec": {
                 "replicas": 1,
                 "selector": {
-                    "deploymentConfig": "mlbparks"
+                    "deploymentConfig": "parks-web"
                 },
                 "strategy": {
                     "type": "Recreate"
@@ -222,10 +222,10 @@
                 "template": {
                     "metadata": {
                         "labels": {
-                            "application": "mlbparks",
-                            "deploymentConfig": "mlbparks"
+                            "application": "parks-web",
+                            "deploymentConfig": "parks-web"
                         },
-                        "name": "mlbparks"
+                        "name": "parks-web"
                     },
                     "spec": {
                         "containers": [
@@ -233,11 +233,11 @@
                                 "env": [
                                     {
                                         "name": "DB_SERVICE_PREFIX_MAPPING",
-                                        "value": "mlbparks-mongodb=DB"
+                                        "value": "parks-web-mongodb=DB"
                                     },
                                     {
                                         "name": "DB_USERNAME",
-                                        "value": "mlbparksuser"
+                                        "value": "parks-webuser"
                                     },
                                     {
                                         "name": "DB_PASSWORD",
@@ -245,31 +245,11 @@
                                     },
                                     {
                                         "name": "DB_NAME",
-                                        "value": "mlbparks"
+                                        "value": "parks-web"
                                     },
                                     {
                                         "name": "DB_ADMIN_PASSWORD",
                                         "value": "password"
-                                    },
-                                    {
-                                        "name": "OPENSHIFT_KUBE_PING_LABELS",
-                                        "value": "application=mlbparks"
-                                    },
-                                    {
-                                        "name": "OPENSHIFT_KUBE_PING_NAMESPACE",
-                                        "valueFrom": {
-                                            "fieldRef": {
-                                                "fieldPath": "metadata.namespace"
-                                            }
-                                        }
-                                    },
-                                    {
-                                        "name": "HTTPS_NAME",
-                                        "value": ""
-                                    },
-                                    {
-                                        "name": "HTTPS_PASSWORD",
-                                        "value": ""
                                     },
                                     {
                                         "name": "DB_PORT",
@@ -284,7 +264,7 @@
                                         "value": "false"
                                     }
                                 ],
-                                "image": "mlbparks",
+                                "image": "parks-web",
                                 "imagePullPolicy": "Always",
                                 "lifecycle": {
                                     "preStop": {
@@ -306,26 +286,11 @@
                                         ]
                                     }
                                 },
-                                "name": "mlbparks",
+                                "name": "parks-web",
                                 "ports": [
-                                    {
-                                        "containerPort": 8778,
-                                        "name": "jolokia",
-                                        "protocol": "TCP"
-                                    },
                                     {
                                         "containerPort": 8080,
                                         "name": "http",
-                                        "protocol": "TCP"
-                                    },
-                                    {
-                                        "containerPort": 8443,
-                                        "name": "https",
-                                        "protocol": "TCP"
-                                    },
-                                    {
-                                        "containerPort": 8888,
-                                        "name": "ping",
                                         "protocol": "TCP"
                                     }
                                 ],
@@ -375,11 +340,11 @@
                         "imageChangeParams": {
                             "automatic": true,
                             "containerNames": [
-                                "mlbparks"
+                                "parks-web"
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "mlbparks:latest"
+                                "name": "parks-web:latest"
                             }
                         },
                         "type": "ImageChange"
@@ -388,137 +353,6 @@
                         "type": "ConfigChange"
                     }
                 ]
-            }
-        },
-        {
-            "apiVersion": "v1",
-            "kind": "DeploymentConfig",
-            "metadata": {
-                "labels": {
-                    "application": "mlbparks",
-                    "template": "eap70-mongodb-persistent-s2i",
-                    "xpaas": "1.3.2"
-                },
-                "name": "mlbparks-mongodb"
-            },
-            "spec": {
-                "replicas": 1,
-                "selector": {
-                    "deploymentConfig": "mlbparks-mongodb"
-                },
-                "strategy": {
-                    "type": "Recreate"
-                },
-                "template": {
-                    "metadata": {
-                        "labels": {
-                            "application": "mlbparks",
-                            "deploymentConfig": "mlbparks-mongodb"
-                        },
-                        "name": "mlbparks-mongodb"
-                    },
-                    "spec": {
-                        "containers": [
-                            {
-                                "env": [
-                                    {
-                                        "name": "MONGODB_USER",
-                                        "value": "mlbparksuser"
-                                    },
-                                    {
-                                        "name": "MONGODB_PASSWORD",
-                                        "value": "password"
-                                    },
-                                    {
-                                        "name": "MONGODB_DATABASE",
-                                        "value": "mlbparks"
-                                    },
-                                    {
-                                        "name": "MONGODB_ADMIN_PASSWORD",
-                                        "value": "password"
-                                    },
-                                    {
-                                        "name": "MONGODB_NOPREALLOC",
-                                        "value": ""
-                                    },
-                                    {
-                                        "name": "MONGODB_SMALLFILES",
-                                        "value": ""
-                                    },
-                                    {
-                                        "name": "MONGODB_QUIET",
-                                        "value": ""
-                                    }
-                                ],
-                                "image": "mongodb",
-                                "imagePullPolicy": "Always",
-                                "name": "mlbparks-mongodb",
-                                "ports": [
-                                    {
-                                        "containerPort": 27017,
-                                        "protocol": "TCP"
-                                    }
-                                ],
-                                "volumeMounts": [
-                                    {
-                                        "mountPath": "/var/lib/mongodb/data",
-                                        "name": "mlbparks-mongodb-pvol"
-                                    }
-                                ]
-                            }
-                        ],
-                        "terminationGracePeriodSeconds": 60,
-                        "volumes": [
-                            {
-                                "name": "mlbparks-mongodb-pvol",
-                                "persistentVolumeClaim": {
-                                    "claimName": "mlbparks-mongodb-claim"
-                                }
-                            }
-                        ]
-                    }
-                },
-                "triggers": [
-                    {
-                        "imageChangeParams": {
-                            "automatic": true,
-                            "containerNames": [
-                                "mlbparks-mongodb"
-                            ],
-                            "from": {
-                                "kind": "ImageStreamTag",
-                                "name": "mongodb:latest",
-                                "namespace": "openshift"
-                            }
-                        },
-                        "type": "ImageChange"
-                    },
-                    {
-                        "type": "ConfigChange"
-                    }
-                ]
-            }
-        },
-        {
-            "apiVersion": "v1",
-            "kind": "PersistentVolumeClaim",
-            "metadata": {
-                "labels": {
-                    "application": "mlbparks",
-                    "template": "eap70-mongodb-persistent-s2i",
-                    "xpaas": "1.3.2"
-                },
-                "name": "mlbparks-mongodb-claim"
-            },
-            "spec": {
-                "accessModes": [
-                    "ReadWriteOnce"
-                ],
-                "resources": {
-                    "requests": {
-                        "storage": "512Mi"
-                    }
-                }
             }
         }
     ]
